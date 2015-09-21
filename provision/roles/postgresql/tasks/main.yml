@@ -1,0 +1,31 @@
+---
+- name: install postgresql
+  sudo: yes
+  apt:
+    pkg: postgresql
+    state: latest
+  notify:
+    - restart postgresql
+
+- name: install packages
+  sudo: yes
+  with_items: postgresql_packages
+  apt:
+    pkg: "{{ item.name }}"
+    state: latest
+
+- name: create db
+  sudo: yes
+  sudo_user: postgres
+  postgresql_db:
+    name: "{{ db_name }}"
+    encoding: 'UTF-8'
+    template: 'template0'
+
+- name: create user
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user:
+    name: "{{ db_username }}"
+    password: "{{ db_password }}"
+    db: "{{ db_name }}"

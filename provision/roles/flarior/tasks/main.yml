@@ -1,0 +1,20 @@
+---
+- name: install packages
+  sudo: yes
+  with_items: device_repair_packages
+  apt:
+    pkg: "{{ item.name }}"
+    state: latest
+
+- name: install python packages
+  sudo: yes
+  pip:
+    requirements: /vagrant/backend/requirements.txt
+
+- name: configure app
+  template:
+    src: local_config.py.j2
+    dest: /vagrant/backend/local_config.py
+
+- name: create DB tables
+  shell: "FLASK_CONFIG={{ flask_environment }} /vagrant/backend/manage.py syncdb"

@@ -1,0 +1,39 @@
+---
+- name: install python packages
+  sudo: yes
+  pip:
+    requirements: /vagrant/backend/requirements_dev.txt
+
+- name: create initial user
+  sudo: yes
+  shell: "FLASK_CONFIG={{ flask_environment }} /vagrant/backend/manage.py create_user -e admin@example.com -p Sekrit"
+
+- name: install packages
+  sudo: yes
+  with_items: vagrant_packages
+  apt:
+    pkg: "{{ item.name }}"
+    state: latest
+
+- name: fetch config repos
+  with_items: vagrant_configs
+  git:
+    repo: "https://github.com/mekanix/{{ item.name }}"
+    dest: "~/{{ item.name }}"
+    accept_hostkey: yes
+
+# - name: configure vagrant account
+#   with_items: vagrant_configs
+#   command: "~/{{ item.name }}/bin/init.sh"
+
+- name: configure flask env
+  template:
+    src: local.fish.j2
+    dest: ~/.config/fish/local.fish
+
+- name: add user vagrant
+  sudo: yes
+  user:
+    name: vagrant
+    shell: /usr/bin/fish
+    state: present
