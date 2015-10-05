@@ -14,3 +14,12 @@
   apt:
     pkg: "{{ item.name }}"
     state: latest
+
+- name: initialize taskwarrior
+  file:
+    path: ~/.taskrc
+    state: touch
+
+- name: initialize taskwarrior
+  shell: task
+  ignore_errors: yes
