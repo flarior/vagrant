@@ -2,3 +2,15 @@
 - name: init config
   with_items: vagrant_configs
   shell: "~/{{ item.name }}/bin/init.sh"
+
+- name: configure flask env
+  template:
+    src: local.fish.j2
+    dest: ~/.config/fish/local.fish
+
+- name: configure vagrant account
+  sudo: yes
+  user:
+    name: vagrant
+    shell: /usr/bin/fish
+    state: present

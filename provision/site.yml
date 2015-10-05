@@ -6,7 +6,6 @@
   roles:
     - common
     - postgresql
-    - flarior
 
 - name: Device Repair Provisioning
   hosts: vagrant
