@@ -1,4 +1,11 @@
 ---
+- name: install packages
+  sudo: yes
+  with_items: vagrant_packages
+  apt:
+    pkg: "{{ item.name }}"
+    state: latest
+
 - name: clone repos
   with_items: flarior_repos
   git:
@@ -12,35 +19,33 @@
   pip:
     requirements: /vagrant/backend/requirements_dev.txt
 
-- name: install npm
+- name: install node packages
   sudo: yes
+  with_items: node_packages
   apt:
-    pkg: npm
+    pkg: "{{ item.name }}"
     state: latest
 
 - name: install npm packages
-  sudo: yes
   npm:
     path: /vagrant/frontend
-    global: yes
 
-- name: install npm extra packages
-  sudo: yes
-  with_items: npm_extra_packages
-  npm:
-    name: "{{ item.name }}"
-    global: yes
+- name: install bower packages
+  shell: /vagrant/frontend/node_modules/bower/bin/bower install
+  args:
+    chdir: /vagrant/frontend
+
+- name: configure app
+  template:
+    src: local_config.py.j2
+    dest: /vagrant/backend/local_config.py
+
+- name: create DB tables
+  shell: "FLASK_CONFIG={{ flask_environment }} /vagrant/backend/manage.py syncdb"
 
 - name: create initial user
   sudo: yes
   shell: "FLASK_CONFIG={{ flask_environment }} /vagrant/backend/manage.py create_user -e admin@example.com -p Sekrit"
-
-- name: install packages
-  sudo: yes
-  with_items: vagrant_packages
-  apt:
-    pkg: "{{ item.name }}"
-    state: latest
 
 - name: fetch config repos
   with_items: vagrant_configs
@@ -51,15 +56,5 @@
     update: no
   notify:
     - init config
-
-- name: configure flask env
-  template:
-    src: local.fish.j2
-    dest: ~/.config/fish/local.fish
-
-- name: add user vagrant
-  sudo: yes
-  user:
-    name: vagrant
-    shell: /usr/bin/fish
-    state: present
+    - configure flask env
+    - configure vagrant account

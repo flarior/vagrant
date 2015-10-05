@@ -1,5 +1,0 @@
----
-device_repair_packages:
-  - name: graphviz
-  - name: python-dev
-  - name: python-pip
