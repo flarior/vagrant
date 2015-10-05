@@ -1,0 +1,4 @@
+---
+- name: init config
+  with_items: vagrant_configs
+  shell: "~/{{ item.name }}/bin/init.sh"

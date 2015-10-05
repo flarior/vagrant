@@ -9,3 +9,7 @@ vagrant_configs:
   - name: fish
   - name: tmux
   - name: vim
+
+flarior_repos:
+  - name: backend
+  - name: frontend

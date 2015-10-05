@@ -1,4 +1,12 @@
 ---
+- name: clone repos
+  with_items: flarior_repos
+  git:
+    repo: "https://github.com/flarior/{{ item.name }}"
+    dest: "/vagrant/{{ item.name }}"
+    accept_hostkey: yes
+    update: no
+
 - name: install python packages
   sudo: yes
   pip:
@@ -21,10 +29,9 @@
     repo: "https://github.com/mekanix/{{ item.name }}"
     dest: "~/{{ item.name }}"
     accept_hostkey: yes
-
-# - name: configure vagrant account
-#   with_items: vagrant_configs
-#   command: "~/{{ item.name }}/bin/init.sh"
+    update: no
+  notify:
+    - init config
 
 - name: configure flask env
   template:
