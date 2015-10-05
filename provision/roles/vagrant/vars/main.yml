@@ -13,3 +13,7 @@ vagrant_configs:
 flarior_repos:
   - name: backend
   - name: frontend
+
+npm_extra_packages:
+  - name: bower
+  - name: gulp
