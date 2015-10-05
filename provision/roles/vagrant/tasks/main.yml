@@ -12,6 +12,25 @@
   pip:
     requirements: /vagrant/backend/requirements_dev.txt
 
+- name: install npm
+  sudo: yes
+  apt:
+    pkg: npm
+    state: latest
+
+- name: install npm packages
+  sudo: yes
+  npm:
+    path: /vagrant/frontend
+    global: yes
+
+- name: install npm extra packages
+  sudo: yes
+  with_items: npm_extra_packages
+  npm:
+    name: "{{ item.name }}"
+    global: yes
+
 - name: create initial user
   sudo: yes
   shell: "FLASK_CONFIG={{ flask_environment }} /vagrant/backend/manage.py create_user -e admin@example.com -p Sekrit"
