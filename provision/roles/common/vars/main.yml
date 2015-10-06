@@ -1,5 +1,5 @@
 ---
 common_packages:
+  - name: docker.io
   - name: git
-  - name: taskwarrior
-  - name: wajig
+  - name: unzip

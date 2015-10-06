@@ -9,7 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         flarior.vm.box_url = "ftp://ftp.lugons.org/vagrant/debian-8.0-x86_64.box"
         flarior.vm.network :private_network, ip: "192.168.7.10"
         flarior.vm.hostname = "vagrant.flarior.com"
-        flarior.vm.provision :ansible, run: "always" do |ansible|
+        flarior.vm.provision :ansible do |ansible|
             ansible.playbook = "provision/site.yml"
             ansible.host_key_checking = false
             ansible.groups = {

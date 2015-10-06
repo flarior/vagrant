@@ -1,0 +1,16 @@
+[Unit]
+Description=PostgreSQL
+After=docker.service networking.service
+Requires=docker.service networking.service
+Wants=docker.service networking.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=/usr/bin/docker pull postgres:latest
+ExecStartPre=-/usr/bin/docker kill postgresql
+ExecStartPre=-/usr/bin/docker rm postgresql
+ExecStart=/usr/bin/docker run {{ docker_postgresql_extra_params }} -e POSTGRES_USER={{ flarior_postgresql_superuser }} -e POSTGRES_PASSWORD={{ flarior_postgresql_superuser_password }} -v /var/lib/docker/volumes/postgresql/data:/var/lib/postgresql/data --rm --name postgresql postgres:latest
+ExecStop=/usr/bin/docker stop postgresql
+
+[Install]
+WantedBy=multi-user.target

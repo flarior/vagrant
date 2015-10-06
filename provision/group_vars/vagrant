@@ -3,7 +3,7 @@
 
 ---
 stage: vagrant
-db_username: flarior
-db_password: password
-db_name: flarior
 flask_environment: dev
+docker_postgresql_extra_params: -p 5432:5432
+flarior_postgresql_password: flarior
+flarior_postgresql_superuser_password: flarior

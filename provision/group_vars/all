@@ -1,0 +1,3 @@
+flarior_postgresql_db: flarior
+flarior_postgresql_user: flarior
+flarior_postgresql_superuser: root
