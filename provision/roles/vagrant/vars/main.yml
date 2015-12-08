@@ -10,6 +10,8 @@ node_packages:
 vagrant_packages:
   - name: cmake
   - name: fish
+  - name: uuid-dev
+  - name: libgnutls-dev
   - name: tmux
   - name: vim-nox
   - name: graphviz
