@@ -6,6 +6,13 @@
     pkg: "{{ item.name }}"
     state: latest
 
+- name: configure vagrant account
+  sudo: yes
+  user:
+    name: vagrant
+    shell: /usr/bin/fish
+    state: present
+
 - name: clone repos
   with_items: flarior_repos
   git:
@@ -14,10 +21,18 @@
     accept_hostkey: yes
     update: no
 
-- name: install python packages
+- name: install vex
   sudo: yes
   pip:
-    requirements: /vagrant/backend/requirements_dev.txt
+    name: vex
+
+- name: create virtual env
+  shell: vex --make flarior pip install -U pip
+  args:
+    creates: ~/.virtualenvs/flarior
+
+- name: install python packages
+  shell: vex flarior pip install -r /vagrant/backend/requirements_dev.txt
 
 - name: install node packages
   sudo: yes
@@ -35,18 +50,6 @@
   args:
     chdir: /vagrant/frontend
 
-- name: configure app
-  template:
-    src: local_config.py.j2
-    dest: /vagrant/backend/local_config.py
-
-- name: create DB tables
-  shell: "FLASK_CONFIG={{ flask_environment }} /vagrant/backend/manage.py syncdb"
-
-- name: create initial user
-  sudo: yes
-  shell: "FLASK_CONFIG={{ flask_environment }} /vagrant/backend/manage.py create_user -e admin@example.com -p Sekrit"
-
 - name: fetch config repos
   with_items: vagrant_configs
   git:
@@ -54,7 +57,12 @@
     dest: "~/{{ item.name }}"
     accept_hostkey: yes
     update: no
-  notify:
-    - init config
-    - configure flask env
-    - configure vagrant account
+
+- name: init config
+  with_items: vagrant_configs
+  shell: "~/{{ item.name }}/bin/init.sh"
+
+- name: configure vagrant env
+  template:
+    src: local.fish.j2
+    dest: ~/.config/fish/local.fish

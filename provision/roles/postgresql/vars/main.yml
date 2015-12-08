@@ -1,3 +1,0 @@
-postgresql_packages:
-  - name: postgresql-server-dev-all
-  - name: python-psycopg2
